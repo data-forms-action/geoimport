@@ -2,13 +2,12 @@
 //  main.cpp
 //  geoimport
 //
-//  Created by Robin DemetriadesCUBE on 26/10/2016.
-//  Copyright © 2016 (c) Greenstreet SWC. All rights reserved.
+//  Created by Robin Demetriades on 26/10/2016.
+//  Copyright © 2016 (c) Robin Demetriades. All rights reserved.
 //
 #include <libpq-fe.h>
 #include <sys/types.h>
 #include <sys/uio.h>
-#include <sys/syslimits.h>
 #include <sys/stat.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -17,6 +16,9 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <dispatch/dispatch.h>
+#if defined(__linux__)
+ #include <bsd/string.h>
+#endif
 
 
 typedef enum YESNO { NO=0,YES=1 } BOOL;
