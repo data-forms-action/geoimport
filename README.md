@@ -35,3 +35,11 @@ Usage:	geoimport -P4 -D [dbname] /file/to/import.csv
 Usage:	geoimport -P4 -U 'host=localhost port=5432 dbname=mydb connect_timeout=10' /file/to/import.csv
 Usage:	geoimport -P4 -U 'postgresql://user@localhost/mydb?connect_timeout=10&application_name=myapp' /file/to/import.csv
 ```
+
+###Building
+Build on Linux with the following (Ubuntu)
+
+```
+clang++ main.cpp -o geoimport -fblocks -std=c++11 -D_BSD_SOURCE -I/usr/include/postgresql -L/usr/lib -lBlocksRuntime -lpthread -lpq -ldispatch -lbsd  
+```
+
