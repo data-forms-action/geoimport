@@ -26,6 +26,10 @@ typedef enum BLOCKORLOC { IPBLOCKS=0,LOCATIONS=1 } FILETYPE;
 const int PROGRAM_SUCCESS = 0;
 const int PROGRAM_FAILED = -1;
 
+#ifndef DISPATCH_QUEUE_SERIAL
+#define DISPATCH_QUEUE_SERIAL	NULL
+#endif
+
 static void ProgramCleanup(void);
 static int Usage();
 static int GetCommandlineOptions(int argc,
