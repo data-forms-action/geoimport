@@ -5,9 +5,7 @@ Importer program for GEO IP City data and the Geoname location data that it refe
 
 This program will import these .csv files into a _**Postgres**_ database.
 
-Works for Mac OS X or Linux. Compile with:
-
-clang: 
+Works for Mac OS X or Linux. Compile with clang.
 
 **Linux dependencies** Requires: libdispatch libbsd
 apt-get install libbsd-dev libdispatch-dev
