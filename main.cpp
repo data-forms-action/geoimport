@@ -409,7 +409,7 @@ uint32_t ProcessLocations(char* currentPos, const char* endPos, PGconn* PqConn, 
 			dprintf( STDOUT_FILENO, "Block Complete on Error. nLocationsProcessed = %u; firs id:%s , last id:%s\n",
 					totalProcessed,start_geoname_id, geoname_id);
 			
-			return NULL;
+			return totalProcessed;
 		}
 		
 		++totalProcessed;
