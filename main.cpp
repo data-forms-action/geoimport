@@ -20,14 +20,13 @@
  #include <bsd/string.h>
 #endif
 
-
 typedef enum YESNO { NO=0,YES=1 } BOOL;
 typedef enum BLOCKORLOC { IPBLOCKS=0,LOCATIONS=1 } FILETYPE;
 const int PROGRAM_SUCCESS = 0;
 const int PROGRAM_FAILED = -1;
 
 #ifndef DISPATCH_QUEUE_SERIAL
-#define DISPATCH_QUEUE_SERIAL	NULL
+ #define DISPATCH_QUEUE_SERIAL	NULL
 #endif
 
 static void ProgramCleanup(void);
@@ -40,8 +39,8 @@ static int GetCommandlineOptions(int argc,
 static char* ReadLine( char** ppCurPos, const char* endPos );
 static const char* AdjustEndPointer(int fdInputFile, const char* pBufferStart, const char* endPos);
 
-static uint16_t ProcessLocations(char* currentPos, const char* endPos, PGconn* PqConn, BOOL* didFail);
-static uint16_t ProcessBlocks(char* currentPos, const char* endPos, PGconn* PqConn, BOOL* didFail);
+static uint32_t ProcessLocations(char* currentPos, const char* endPos, PGconn* PqConn, BOOL* didFail);
+static uint32_t ProcessBlocks(char* currentPos, const char* endPos, PGconn* PqConn, BOOL* didFail);
 
 static BOOL AddLocationToDatabase(const char* geoname_id, const char* continent_code, const char* city_name,
 								  const char* country_iso_code, const char* country_name,
@@ -145,7 +144,7 @@ int main( int argc, const char* argv[] )
 	}
 	if( (int16_t)NumProcessors<=0 ){ NumProcessors=1; }
 	dprintf(STDOUT_FILENO,"Processing File: %lld bytes (%lld MB) using %u processing threads.\n",
-		FileBytesRemaining, ((FileTotalSize/OneMB)), NumProcessors);
+		(long long)FileBytesRemaining, (long long)((FileTotalSize/OneMB)), NumProcessors);
 
 	dispatch_group_t fileProcGrp = dispatch_group_create();
 	
@@ -234,7 +233,7 @@ uint32_t ProcessFile(FILETYPE fileMode,const char* strDbName,dispatch_queue_t lo
 		
 		if( 0==(totalProcessed%2) ){
 			dprintf(STDOUT_FILENO,"Processor:%u Total Processed:%u bytes remaining to process: %lld (%u MB)\n",
-				procId, totalProcessed, FileBytesRemaining, (uint32_t)(FileBytesRemaining/OneMB) );
+				procId, totalProcessed, (long long)FileBytesRemaining, (uint32_t)(FileBytesRemaining/OneMB) );
 		}
 		if( YES==didFail )
 		{
@@ -347,7 +346,7 @@ static const char* strNoneProcessed = "Nobe Processed";
 /*
 	Reads all lines and proceses them as Location
 */
-uint16_t ProcessLocations(char* currentPos, const char* endPos, PGconn* PqConn, BOOL* didFail)
+uint32_t ProcessLocations(char* currentPos, const char* endPos, PGconn* PqConn, BOOL* didFail)
 {
 	*didFail = NO;
 	const char *geoname_id,*locale_code,*continent_code,*continent_name;
@@ -422,10 +421,10 @@ uint16_t ProcessLocations(char* currentPos, const char* endPos, PGconn* PqConn, 
 	return totalProcessed;
 }
 
-uint16_t ProcessBlocks(char* currentPos, const char* endPos, PGconn* PqConn, BOOL* didFail)
+uint32_t ProcessBlocks(char* currentPos, const char* endPos, PGconn* PqConn, BOOL* didFail)
 {
 	*didFail = NO;
-	uint16_t totalProcessed = 0;
+	uint32_t totalProcessed = 0;
 	const char *network, *geoname_id,*registered_country_geoname_id;
 	const char *represented_country_geoname_id,*is_anonymous_proxy;
 	const char *is_satellite_provider,*postal_code;
@@ -469,7 +468,7 @@ uint16_t ProcessBlocks(char* currentPos, const char* endPos, PGconn* PqConn, BOO
 		dbCallFailed = AddIPBlockToDatabase(network, geoname_id, postal_code, PqConn);
 		if(YES==dbCallFailed){
 			*didFail = YES;
-			return NULL;
+			return totalProcessed;
 		}
 
 		++totalProcessed;
@@ -479,7 +478,6 @@ uint16_t ProcessBlocks(char* currentPos, const char* endPos, PGconn* PqConn, BOO
 	
 	return totalProcessed;
 }
-
 
 const char* ScanWordUntil(char* currentPos, char** ppCurrentPos, char until)
 {
@@ -932,4 +930,3 @@ BOOL AddLocationToDatabase(const char* geoname_id, const char* continent_code, c
 	
 	return bDidFail;
 }
-
