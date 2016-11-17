@@ -2,12 +2,20 @@
 ####Max Mind GEO IP Data Importer for Postgres
 
 Importer program for GEO IP City data and the Geoname location data that it references.
+Download the MaxMind Geo Lite city .csv files  [http://geolite.maxmind.com/download/geoip/database/GeoLite2-City-CSV.zip]
 
+After unpacking, there will be a City-Locations .csv file and a City-Blocks-IP4 .csv file
 This program will import these .csv files into a _**Postgres**_ database.
+
+If you haven't yet, first run the postgres.sql file into your database to create the
+required tables, functions and views.
+
+Use geoimport to first import the City-Locations file, and then the City-Blocks file.
 
 Works for Mac OS X or Linux. Compile with clang.
 
-**Linux dependencies** Requires: libdispatch libbsd
+**Linux dependencies** Requires: libdispatch, libbsd
+
 apt-get install libbsd-dev libdispatch-dev
 
 
