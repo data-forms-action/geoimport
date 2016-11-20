@@ -74,7 +74,7 @@ CREATE TABLE public.geoip
 	geoname_id	INT4 NOT NULL,
 	postal_code	VARCHAR(16) NULL
 );
-
+CREATE UNIQUE INDEX idx_netgeo ON geoip(geoname_id,network);
 
 /*		Views			*/
 
